@@ -25,6 +25,13 @@ function extend(subClass,superClass) {
     F.prototype = superClass.prototype;
     subClass.prototype = new F();
     subClass.prototype.constructor = subClass;
+    
+    subClass.superClass = superClass.prototype;
+    //此处要添加superClass.prototype这个实例对象为子类的superClass属性，
+    //因为superClass是一个函数对象，subClass的superClass属性是为了访问父类对象
+    if(superClass.prototype.constructor === Object.prototype.constructor){
+        superClass.prototype.constructor = superClass;
+    }
 }
 
 function Super() {
