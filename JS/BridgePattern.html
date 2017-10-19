@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ajax Connection Queue</title>
+    <script src="js/BridgePattern.js" type="text/javascript"></script>
+</head>
+<style>
+    body{
+        font: 100% times,serif;
+    }
+    h1,h2{
+        font-weight:normal;
+    }
+    #queue-items{
+        height: 1.5em;
+    }
+    #add-stuff{
+        padding: .5em;
+        background: #ddd;
+        border: 1px solid #bbb;
+    }
+    #result-area{
+        padding: .5em;
+        border: 1px solid #bbb;
+    }
+
+</style>
+<body>
+
+<div id="doc">
+    <h1>Ajax Connetion Queue</h1>
+    <div id="queue-items"></div>
+    <div id="add-stuff">
+        <h2>Add Request to Queue</h2>
+        <ul id="adders">
+            <li><a href="#" id="action-01">Add '01' to Queue</a></li>
+            <li><a href="#" id="action-02">Add '02' to Queue</a></li>
+            <li><a href="#" id="action-03">Add '03' to Queue</a></li>
+        </ul>
+    </div>
+    <h2>Other Queue Actions</h2>
+    <ul id="items">
+        <li><a href="#" id="flush">Flush</a></li>
+        <li><a href="#" id="dequeue">Dequeue</a></li>
+        <li><a href="#" id="clear">Clear</a></li>
+        <li><a href="#" id="pause">Pause</a></li>
+    </ul>
+    <div id="result-area">
+        <h2>Results:</h2>
+        <div id="results"></div>
+    </div>
+</div>
+
+<script>
+
+    window.onload = function () {
+        var q = new window.DED.Queue();
+        q.setRetryCount(3);
+        q.setTimeout(1000);
+
+        var items = document.getElementById('items');
+        var results = document.getElementById('results');
+        var queue = document.getElementById('queue-items');
+
+        var requests = [];
+
+        q.onFlush.subscribe(function (data) {
+            results.innerHTML = data;
+            requests.shift();
+            queue.innerHTML = requests.toString();
+        });
+
+        q.onFailure.subscribe(function () {
+            results.innerHTML += '<span style="color:red">Connection Error</span>';
+        });
+
+        q.onComplete.subscribe(function () {
+            results.innerHTML += '<span style="color:green">Complete!</span>';
+        });
+
+        //桥接函数
+        var actionDispatcher = function (element) {
+            switch (element){
+                case 'flush':
+                    q.flush();
+                    break;
+                case 'dequeue':
+                    q.dequeue();
+                    requests.pop();
+                    queue.innerHTML = requests.toString();
+                    break;
+                case 'pause':
+                    q.pause();
+                    break;
+                case 'clear':
+                    q.clear();
+                    requests = [];
+                    queue.innerHTML = "";
+                    break;
+            }
+        };
+
+        //桥接函数
+        var addRequest = function (request) {
+            var data = request.split('-')[1];
+            q.add({
+                method:'GET',
+                url:'resource/'+data+'.txt',
+                params:null
+            });
+            requests.push(data);
+            queue.innerHTML = requests.toString();
+        };
+
+        items.onclick = function (e) {
+            var e = e || window.event;
+            var src = e.target || e.srcElement;
+            try{
+                e.preventDefault();
+            }
+            catch(ex){
+                e.returnValue = false;
+            }
+            console.log(e);
+            console.log(src);
+            actionDispatcher(src.id);
+        };
+
+        var adders = document.getElementById('adders');
+        adders.onclick = function (e) {
+            var e = e || window.event;
+            var src = e.target || e.srcElement;
+            try{
+                e.preventDefault();
+            }
+            catch(ex){
+                e.returnValue = false;
+            }
+            addRequest(src.id);
+        }
+    };
+</script>
+</body>
+</html>
