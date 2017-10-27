@@ -14,3 +14,28 @@ function addEvent(el,type,fn){
     el['on'+type] = fn;
   }
 }
+
+var DED = window.DED || {};
+DED.util = {
+    stopPropagation:function (e) {
+        if(e.stopPropagation){
+            e.stopPropagation();
+        }
+        else{
+            e.cancelBubble = true;
+        }
+    },
+    preventDefault:function (e) {
+        if(e.preventDefault){
+            e.preventDefault();
+        }
+        else{
+            e.returnValue = false;
+        }
+    },
+    //facade
+    stopEvent:function (e) {
+        DED.util.stopPropagation(e);
+        DED.util.preventDefault(e);
+    }
+}
