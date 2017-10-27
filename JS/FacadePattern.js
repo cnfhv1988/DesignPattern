@@ -15,8 +15,7 @@ function addEvent(el,type,fn){
   }
 }
 
-var DED = window.DED || {};
-DED.util = {
+DED.util.Event = {
     stopPropagation:function (e) {
         if(e.stopPropagation){
             e.stopPropagation();
@@ -33,6 +32,12 @@ DED.util = {
             e.returnValue = false;
         }
     },
+    getEvent:function (e) {
+        return e||window.event;
+    },
+    getTarget:function (e) {
+        return e.target || e.srcElement;
+    }
     //facade
     stopEvent:function (e) {
         DED.util.stopPropagation(e);
