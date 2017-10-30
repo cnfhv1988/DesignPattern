@@ -16,3 +16,27 @@ function substitude(s,o){
 }
 
 //************************************************************************
+//适配器模式，对对象进行包装进而改变其呈现的接口，它是两个不兼容接口之间的代码薄层，在充分了解接收方和提供方的情况，
+//截取提供方的逻辑，使之转变为接收方理解的逻辑
+function Afun(id,name){
+  //some logic
+}
+
+function Bfun(name){
+  //some logic
+}
+
+function AtoBadapter(id,name)(
+  //some loigc
+  return Bfun(name);
+
+//convert Afun to Bfun
+Afun = AtoBadapter;
+
+function BtoAadapter(name){
+  //some logic
+  var id;
+  return Afun(id,name);
+}
+
+Bfun = BtoAadapter;
