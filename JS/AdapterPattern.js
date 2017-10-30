@@ -19,24 +19,20 @@ function substitude(s,o){
 //适配器模式，对对象进行包装进而改变其呈现的接口，它是两个不兼容接口之间的代码薄层，在充分了解接收方和提供方的情况，
 //截取提供方的逻辑，使之转变为接收方理解的逻辑
 function Afun(id,name){
-  //some logic
+    console.log('This is Afun and id:' + id + ' name:' + name);
 }
 
 function Bfun(name){
-  //some logic
+    //some logic
+    console.log('This is Bfun and name:' + name);
 }
 
-function AtoBadapter(id,name)(
-  //some loigc
-  return Bfun(name);
+function AtoBadapter(id,name){
+    //some loigc
+    return Bfun(name);
+}
 
+Afun(1,'MaChao'); //This is Afun and id:1 name:MaChao
 //convert Afun to Bfun
 Afun = AtoBadapter;
-
-function BtoAadapter(name){
-  //some logic
-  var id;
-  return Afun(id,name);
-}
-
-Bfun = BtoAadapter;
+Afun(1,'MaChao'); //This is Bfun and name:MaChao
