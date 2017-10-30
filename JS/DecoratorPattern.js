@@ -113,3 +113,33 @@ function UpperDecorator(func){
 console.log(getDate());
 getDate = UpperDecorator(getDate);
 console.log(getDate());
+
+//透明的添加方法
+var MethodProfiler = function (component) {
+    this.component = component;
+    this.timer = {}
+    for(var key in this.component){
+        if(typeof this.component[key] != 'funciont'){
+            continue;
+        }
+        var that = this;
+        (function (methodName) {
+            that.startTimer(methodName);
+            var returnValue = that[methodName].apply(that,arguments);
+            that.displayTime(methodName, that.getElpsedTime(methodName));
+        })(key);
+        }
+    }
+};
+MethodProfiler.prototype = {
+    startTimer:function (methodName) {
+        this.timer[methodName] = (new Date()).getTime();
+    },
+    getElpsedTime:function (methodName) {
+        return (new Date()).getTime() - this.timer[methodName];
+    },
+    displayTime:function (methodName, time) {
+        console.log(methodName + ' costs' + time + ' ms');
+    }
+}
+//装饰者模式，无法通过类型安全检查，也会增加架构的复杂程度和代码可读性
