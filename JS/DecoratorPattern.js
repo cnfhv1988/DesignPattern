@@ -119,23 +119,22 @@ var MethodProfiler = function (component) {
     this.component = component;
     this.timer = {}
     for(var key in this.component){
-        if(typeof this.component[key] != 'funciont'){
+        if(typeof this.component[key] != 'function'){
             continue;
         }
         var that = this;
         (function (methodName) {
             that.startTimer(methodName);
             var returnValue = that[methodName].apply(that,arguments);
-            that.displayTime(methodName, that.getElpsedTime(methodName));
+            that.displayTime(methodName, that.getElapsedTime(methodName));
         })(key);
-        }
     }
 };
 MethodProfiler.prototype = {
     startTimer:function (methodName) {
         this.timer[methodName] = (new Date()).getTime();
     },
-    getElpsedTime:function (methodName) {
+    getElapsedTime:function (methodName) {
         return (new Date()).getTime() - this.timer[methodName];
     },
     displayTime:function (methodName, time) {
